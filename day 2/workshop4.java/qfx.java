@@ -6,7 +6,7 @@ public class qfx
     {
         Scanner scan=new Scanner(System.in);
     
-        System.out.println("enter age group(child/adult/senior): ");
+        System.out.println(" age group hala:(child/adult/senior): ");
         String ag=scan.next().toLowerCase();
         
         double price=0;
@@ -42,9 +42,9 @@ public class qfx
             price=price-(price*0.20);
         }
 
-        System.out.println("Is it a festival day? (ho/haina): ");
+        System.out.println("Aja kunai festival(chad) xa? (xa/xaina): ");
         String f=scan.next().toLowerCase();
-        if(f.equals("ho")){
+        if(f.equals("xa")){
             price=price-(price*0.15);
         }
 
