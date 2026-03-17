@@ -1,4 +1,4 @@
-
+ 
 /**
  * Write a description of class main here.
  *
@@ -27,10 +27,18 @@ public class Main
             System.out.println("4. Add Pro Team Member");
             System.out.println("5. Display Plan Info");
             System.out.println("0. Exit");
-
+                
             System.out.print("Enter choice: ");
+                
+                while(!sc.hasNextInt())
+                {
+                    System.out.println("Invalid input. Please enter a number.");
+                    sc.next(); 
+                    System.out.print("Enter choice again: ");
+                }
+                
             choice = sc.nextInt();
-
+                
             if(choice == 1)
             {
                 int inputTokens;

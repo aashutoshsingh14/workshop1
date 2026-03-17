@@ -45,7 +45,7 @@ public class PersonalPlan extends AIModel
 
         if(allowed == true)
         {
-            monthlyQuota = monthlyQuota - 1;
+            monthlyQuota = monthlyQuota - 1;//was inluded after identifying logical error
 
             int total = calculateTokenUsage(inputTokens, outputTokens);
 
