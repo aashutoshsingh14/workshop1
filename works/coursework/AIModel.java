@@ -1,77 +1,64 @@
-
 /**
- * Write a description of class AIModel here.
+ * This is the parent abstract class for all subscription plan's classes.
  *
- * @author (your name)
+ * @author (Aashutosh Singh)
  * @version (a version number or a date)
  */
-public class AIModel
-{
+
+
+public abstract class AIModel {
+
     private String modelName;
     private double price;
-    private int parameters;
-    private int contextWindow;
-
-    private int systemTokens = 50;
-
-    public AIModel(String modelName, double price, int parameters, int contextWindow)
-    {
+    private int parameterCount;
+    private int contextWindow; 
+    private int systemTokens=50;
+    
+    public AIModel(String modelName, double price, int parameterCount, int contextWindow) {
         this.modelName = modelName;
         this.price = price;
-        this.parameters = parameters;
+        this.parameterCount = parameterCount;
         this.contextWindow = contextWindow;
     }
 
-    public String getModelName()
-    {
+    // getter methods for other classes to read these values
+
+
+    public String getModelName() {
         return modelName;
     }
 
-    public double getPrice()
-    {
+    
+    public double getPrice() {
         return price;
     }
 
-    public int getParameters()
-    {
-        return parameters;
+    
+    public int getParameterCount() {
+        return parameterCount;
     }
 
-    public int getContextWindow()
-    {
+  
+    public int getContextWindow() {
         return contextWindow;
     }
 
-    public int calculateTokenUsage(int inputTokens, int outputTokens)
-    {
-        int totalTokens;
+    
+    public abstract String display();
 
-        totalTokens = systemTokens + inputTokens + outputTokens;
+    
+    public int calculateTotalToken(String promptText, int outputTokens) {
+
+        String[] words = promptText.split(" ");
+        int inputTokens = words.length;
+        
+
+        int totalTokens = systemTokens+ inputTokens + outputTokens;
+
+        if (totalTokens > contextWindow) {
+            throw new IllegalArgumentException("Total tokens (" + totalTokens + ") exceeds the context window limit of " + contextWindow + " tokens.");
+        }
 
         return totalTokens;
-    }
-
-    public boolean checkContextLimit(int inputTokens, int outputTokens)
-    {
-        int total;
-
-        total = calculateTokenUsage(inputTokens, outputTokens);
-
-        if(total > contextWindow)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    public String display()
-    {
-        return "Model Name: " + modelName +
-               "\nPrice (NPR per 1L tokens): " + price +
-               "\nParameters (billions): " + parameters +
-               "\nContext Window: " + contextWindow;
     }
 }

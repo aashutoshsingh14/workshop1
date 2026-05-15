@@ -1,65 +1,64 @@
+public class PersonalPlan extends AIModel {
 
-/**
- * Write a description of class PersonalPlan here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-public class PersonalPlan extends AIModel
-{
-    private int monthlyQuota;
+    private int availableTokens;
 
-    public PersonalPlan(String modelName, double price, int parameters, int contextWindow, int quota)
-    {
-        super(modelName, price, parameters, contextWindow);
-        this.monthlyQuota = quota;
+    public PersonalPlan(String modelName, double price, int parameterCount, int contextWindow, int availableTokens) {
+        super(modelName, price, parameterCount, contextWindow);
+        this.availableTokens = availableTokens;
     }
 
-    public int getMonthlyQuota()
-    {
-        return monthlyQuota;
+    public int getAvailableTokens() {
+        return availableTokens;
+    }
+    
+    public String purchaseTokens(int tokens) {
+
+    if (tokens <= 0) {
+        return "Invalid purchase: Please enter a positive number of tokens.";
     }
 
-    public String buyPrompts(int amount)
-    {
-        if(amount <= 0)
-        {
-            return "Enter positive value or upgrade to Pro plan.";
-        }
-
-        monthlyQuota = monthlyQuota + amount;
-
-        return "Prompts purchased. New quota: " + monthlyQuota;
+    
+    if (tokens > 1000000) {
+        return "Purchase limit exceeded. Please buy a smaller amount of tokens.";
     }
 
-    public String usePrompt(int inputTokens, int outputTokens)
-    {
-        if(monthlyQuota <= 0)
-        {
-            return "Monthly quota reached.";
+    availableTokens += tokens;
+
+    return "Purchase successful!\n"
+         + "Added: " + tokens + " tokens\n"
+         + "Total available tokens: " + availableTokens;
+}
+
+    public String enterPrompt(String promptText, int outputTokens) {
+
+        int totalTokens;
+
+        try {
+            totalTokens = calculateTotalToken(promptText, outputTokens);
+        } catch (IllegalArgumentException e) {
+            return "Error: " + e.getMessage();
         }
 
-        boolean allowed;
-
-        allowed = checkContextLimit(inputTokens, outputTokens);
-
-        if(allowed == true)
-        {
-            monthlyQuota = monthlyQuota - 1;//was inluded after identifying logical error
-
-            int total = calculateTokenUsage(inputTokens, outputTokens);
-
-            return "Prompt executed successfully.\nTotal Tokens Used: " + total +"\nRemaining prompts: " + monthlyQuota;
+        //  Check if enough tokens
+        if (totalTokens > availableTokens) {
+            return "INSUFFICIENT_TOKENS:" + totalTokens;
         }
-        else
-        {
-            return "Prompt rejected. Context limit exceeded.";
-        }
+
+        // Deduct tokens
+        availableTokens = availableTokens - totalTokens;
+
+        return "Prompt sent! Tokens used: " + totalTokens +
+               ". Tokens remaining: " + availableTokens;
     }
 
-    public String display()
-    {
-        return super.display() +
-               "\nRemaining Monthly Prompts: " + monthlyQuota;
+    public String display() {
+        String details = "";
+        details = details + "Plan Type: Personal Plan\n";
+        details = details + "Model Name: " + getModelName() + "\n";
+        details = details + "Price (NPR per 1 Lakh tokens): " + getPrice() + "\n";
+        details = details + "Parameter Count (Billions): " + getParameterCount() + "\n";
+        details = details + "Context Window (tokens): " + getContextWindow() + "\n";
+        details = details + "Available Tokens: " + availableTokens;
+        return details;
     }
 }

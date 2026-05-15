@@ -1,59 +1,65 @@
 
 /**
- * Write a description of class ProPlan here.
+ * This is the child class of AiModel and represents the pro plan logic
  *
- * @author (your name)
+ * @author (Aashutosh Singh)
  * @version (a version number or a date)
  */
-public class ProPlan extends AIModel
-{
-    private int teamSlots;
 
-    public ProPlan(String modelName, double price, int parameters, int contextWindow, int teamSlots)
-    {
-        super(modelName, price, parameters, contextWindow);
+public class ProPlan extends AIModel {
+
+   private int teamSlots;
+
+    public ProPlan(String modelName, double price, int parameterCount, int contextWindow, int teamSlots) {
+        
+        super(modelName, price, parameterCount, contextWindow);
         this.teamSlots = teamSlots;
     }
 
-    public String addTeamMember(String name)
-    {
-        if(teamSlots <= 0)
-        {
-            return "No available team slots.";
-        }
-
-        teamSlots = teamSlots - 1;
-
-        return name + " added to team. Remaining slots: " + teamSlots;
+   
+    public int getTeamSlots() {
+        return teamSlots;
     }
 
-    public String removeTeamMember(String name)
-    {
+    
+    public String addTeamMember(String memberName) {
+        if (teamSlots <= 0) {
+            return "No team slots available. Please upgrade your plan to add more members.";
+        }
+
+       teamSlots = teamSlots - 1;
+        return memberName + " has been added to the team. Remaining slots: " + teamSlots;
+    }
+
+    
+    public String removeTeamMember(String memberName) {
+        
         teamSlots = teamSlots + 1;
-
-        return name + " removed from team. Available slots: " + teamSlots;
+        return memberName + " has been removed from the team. Available slots: " + teamSlots;
     }
 
-    public String usePrompt(int inputTokens, int outputTokens)
-    {
-        boolean allowed;
+    
+    public String enterPrompt(String promptText, int outputTokens) {
 
-        allowed = checkContextLimit(inputTokens, outputTokens);
-
-        if(allowed == true)
-        {
-            int total = calculateTokenUsage(inputTokens, outputTokens);
-
-            return "Prompt executed successfully.\nTotal Tokens Used: " + total +"\nUnlimited prompts available.";
+        int totalTokens;
+        try {
+            totalTokens = calculateTotalToken(promptText, outputTokens);
+        } catch (IllegalArgumentException e) {
+            return "Error: " + e.getMessage();
         }
-        else
-        {
-            return "Prompt rejected. Context limit exceeded.";
-        }
+
+        return "Prompt sent! Tokens used this request: " + totalTokens + ". (Pro Plan - no token deduction)";
     }
 
-    public String display()
-    {
-        return super.display() +"\nAvailable Team Slots: " + teamSlots;
+    
+    public String display() {
+        String details = "";
+        details = details + "Plan Type: Pro Plan\n";
+        details = details + "Model Name: " + getModelName() + "\n";
+        details = details + "Price (NPR per 1 Lakh tokens): " + getPrice() + "\n";
+        details = details + "Parameter Count (Billions): " + getParameterCount() + "\n";
+        details = details + "Context Window (tokens): " + getContextWindow() + "\n";
+        details = details + "Team Slots Available: " + teamSlots;
+        return details;
     }
 }
